@@ -114,23 +114,10 @@ export default function Home() {
         height: "100%",
         background: "lightblue",
       }}>
-        <Map />
+        <Map  {...{ rep, undoManager }} />
       </div></>
   );
 }
 
-// function Map() {
-//   const center = useMemo(() => ({ lat: 44, lng: -80 }), [])
 
-//   return (
-//     <GoogleMap
-//       zoom={10}
-//       center={center}
-//       mapContainerStyle={{ height: "100vh", width: "100%" }}
-//     >
-
-//       <Marker position={{ lat: 44, lng: -80 }} />
-//     </GoogleMap>
-//   );
-// }
 

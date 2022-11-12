@@ -1,8 +1,8 @@
-import { useSubscribe } from "replicache-react";
-import { getClientState, clientStatePrefix } from "./client-state";
-import { getShape, shapePrefix } from "./shape";
-import { mutators } from "./mutators";
 import { Replicache } from "replicache";
+import { useSubscribe } from "replicache-react";
+import { clientStatePrefix, getClientState } from "./client-state";
+import { mutators } from "./mutators";
+import { getShape, shapePrefix } from "./shape";
 
 export function useShapeIDs(rep: Replicache<typeof mutators>) {
   return useSubscribe(

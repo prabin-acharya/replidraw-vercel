@@ -1,21 +1,19 @@
-import React, { useRef, useState } from "react";
-import { Rect } from "./rect";
-import { HotKeys } from "react-hotkeys";
-import { Collaborator } from "./collaborator";
-import { RectController } from "./rect-controller";
-import { touchToMouse } from "./events";
-import { Selection } from "./selection";
-import { DraggableCore } from "react-draggable";
-import {
-  useShapeIDs,
-  useOverShapeID,
-  useSelectedShapeID,
-  useCollaboratorIDs,
-} from "./subscriptions";
-import { Replicache } from "replicache";
-import { M } from "./mutators";
 import type { UndoManager } from "@rocicorp/undo";
+import React, { useRef, useState } from "react";
+import { DraggableCore } from "react-draggable";
+import { HotKeys } from "react-hotkeys";
+import { Replicache } from "replicache";
+import { Collaborator } from "./collaborator";
+import { touchToMouse } from "./events";
+import { M } from "./mutators";
+import { Rect } from "./rect";
+import { RectController } from "./rect-controller";
+import { Selection } from "./selection";
 import { getShape, Shape } from "./shape";
+import {
+  useCollaboratorIDs, useOverShapeID,
+  useSelectedShapeID, useShapeIDs
+} from "./subscriptions";
 
 export function Designer({
   rep,
