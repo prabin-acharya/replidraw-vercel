@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { Replicache } from "replicache";
-import { Designer } from "../../frontend/designer";
-import { Nav } from "../../frontend/nav";
-import Pusher from "pusher-js";
-import { M, mutators } from "../../frontend/mutators";
-import { randUserInfo } from "../../frontend/client-state";
-import { randomShape } from "../../frontend/shape";
 import { UndoManager } from "@rocicorp/undo";
 import { useRouter } from "next/router";
+import Pusher from "pusher-js";
+import { useEffect, useState } from "react";
+import { Replicache } from "replicache";
+import { randUserInfo } from "../../frontend/client-state";
+import { Designer } from "../../frontend/designer";
+import { M, mutators } from "../../frontend/mutators";
+import { Nav } from "../../frontend/nav";
+import { randomShape } from "../../frontend/shape";
 
 export default function Home() {
   const [rep, setRep] = useState<Replicache<M> | null>(null);
@@ -83,7 +83,7 @@ export default function Home() {
         flexDirection: "column",
         left: 0,
         top: 0,
-        width: "100%",
+        width: "50%",
         height: "100%",
         background: "rgb(229,229,229)",
       }}
