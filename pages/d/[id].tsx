@@ -1,13 +1,16 @@
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { UndoManager } from "@rocicorp/undo";
 import { useRouter } from "next/router";
 import Pusher from "pusher-js";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Replicache } from "replicache";
 import { randUserInfo } from "../../frontend/client-state";
 import { Designer } from "../../frontend/designer";
 import { M, mutators } from "../../frontend/mutators";
 import { Nav } from "../../frontend/nav";
 import { randomShape } from "../../frontend/shape";
+
+
 
 export default function Home() {
   const [rep, setRep] = useState<Replicache<M> | null>(null);
@@ -18,6 +21,10 @@ export default function Home() {
   });
   const router = useRouter();
   const { hideNav } = router.query;
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+  });
 
   // TODO: Think through Replicache + SSR.
   useEffect(() => {
@@ -75,23 +82,62 @@ export default function Home() {
     return null;
   }
 
+
+
+
+
+
   return (
-    <div
-      style={{
+    <>
+      <div
+        style={{
+          position: "absolute",
+          display: "flex",
+          flexDirection: "column",
+          left: 0,
+          top: 0,
+          width: "50%",
+          height: "100%",
+          background: "rgb(229,229,229)",
+        }}
+      >
+        {!hideNav && (
+          <Nav rep={rep} canUndoRedo={canUndoRedo} undoManager={undoManager} />
+        )}
+        <Designer {...{ rep, undoManager }} />
+
+      </div>
+      <div style={{
         position: "absolute",
         display: "flex",
         flexDirection: "column",
-        left: 0,
+        right: 0,
         top: 0,
         width: "50%",
         height: "100%",
-        background: "rgb(229,229,229)",
-      }}
-    >
-      {!hideNav && (
-        <Nav rep={rep} canUndoRedo={canUndoRedo} undoManager={undoManager} />
-      )}
-      <Designer {...{ rep, undoManager }} />
-    </div>
+        background: "lightblue",
+      }}>
+        {!isLoaded ? (
+          <div>Loading...</div>
+        ) : (
+          <Map />
+        )}
+      </div></>
   );
 }
+
+function Map() {
+  const center = useMemo(() => ({ lat: 44, lng: -80 }), [])
+
+  return (
+    <GoogleMap
+      zoom={10}
+      center={center}
+      mapContainerStyle={{ height: "100vh", width: "100%" }}
+    >
+
+      <Marker position={{ lat: 44, lng: -80 }} />
+    </GoogleMap>
+  );
+}
+

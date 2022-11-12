@@ -10,6 +10,7 @@
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'backend/**/*.test.ts'"
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.17.0",
     "@rocicorp/undo": "^0.1.0",
     "bootstrap": "^4.6.1",
     "cubic-hermite": "^1.0.0",
