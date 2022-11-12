@@ -86,7 +86,7 @@ export default function Home() {
 
   return (
     <>
-      <div
+      {/* <div
         style={{
           position: "absolute",
           display: "flex",
@@ -103,7 +103,7 @@ export default function Home() {
         )}
         <Designer {...{ rep, undoManager }} />
 
-      </div>
+      </div> */}
       <div style={{
         position: "absolute",
         display: "flex",
