@@ -4,9 +4,11 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Replicache } from "replicache";
 import { Collaborator } from "./collaborator";
 import { M } from "./mutators";
+import { useCursor } from "./smoothie";
 import {
     useCollaboratorIDs
 } from "./subscriptions";
+
 
 export function Map({
     rep,
@@ -46,6 +48,14 @@ export function Map({
     const ref = useRef<HTMLDivElement | null>(null);
 
 
+    // #########################
+    const [cursorLat, setCursorLat] = useState(44)
+    const [cursorLng, setCursorLng] = useState(-80)
+
+
+
+
+
     const onMouseMove = async ({
         pageX,
         pageY,
@@ -63,6 +73,18 @@ export function Map({
     };
 
 
+
+    const onMouseMove2 = (e: any) => {
+        const a = JSON.stringify(e.latLng.toJSON(), null, 2)
+        const b: { lat: number, lng: number } = JSON.parse(a)
+        onMouseMove({ pageX: b.lat, pageY: b.lng })
+    }
+
+
+
+
+
+
     return (<>
         {!isLoaded ? <div>Loading...</div> :
             <>
@@ -77,38 +99,43 @@ export function Map({
                             overflow: "hidden",
                             border: "2px solid green",
                         },
-                        onMouseMove,
+                        // onMouseMove,
                     }}
                 >
 
                     <GoogleMap
                         zoom={10}
-                        center={center}
+                        center={{ lat: 44, lng: -80 }}
                         mapContainerStyle={{ height: "100vh", width: "100%", cursor: "pointer" }}
                         onClick={onClick}
+                    onMouseMove={(e) => onMouseMove2(e)}
                     // onIdle={onIdle}
                     >
 
+                        {/* <Marker position={{ lat: cursorLat, lng: cursorLng }} /> */}
+
+
                         {/* <Marker position={{ lat: 44, lng: -80 }} /> */}
-                        {clicks.map((latLng, i) => (
+                        {/* {clicks.map((latLng, i) => (
                             <Marker key={i} position={latLng} />
-                        ))}
+                        ))} */}
+                        {
+                            // collaborators
+                            // foreignObject seems super buggy in Safari, so instead we do the
+                            // text labels in an HTML context, then do collaborator selection
+                            // rectangles as their own independent svg content. Le. Sigh.
+                            collaboratorIDs.map((id) => (
+                                <Collaborator
+                                    {...{
+                                        key: `key-${id}`,
+                                        rep,
+                                        clientID: id,
+                                    }}
+                                />
+                            ))
+                        }
                     </GoogleMap>
-                    {
-                        // collaborators
-                        // foreignObject seems super buggy in Safari, so instead we do the
-                        // text labels in an HTML context, then do collaborator selection
-                        // rectangles as their own independent svg content. Le. Sigh.
-                        collaboratorIDs.map((id) => (
-                            <Collaborator
-                                {...{
-                                    key: `key-${id}`,
-                                    rep,
-                                    clientID: id,
-                                }}
-                            />
-                        ))
-                    }
+
                 </div>
             </>
         }

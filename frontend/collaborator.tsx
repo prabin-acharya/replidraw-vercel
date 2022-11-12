@@ -1,9 +1,10 @@
-import styles from "./collaborator.module.css";
+import { Marker } from "@react-google-maps/api";
 import { useEffect, useState } from "react";
+import { Replicache } from "replicache";
+import styles from "./collaborator.module.css";
+import type { M } from "./mutators";
 import { Rect } from "./rect";
 import { useCursor } from "./smoothie";
-import { Replicache } from "replicache";
-import type { M } from "./mutators";
 import { useClientInfo } from "./subscriptions";
 
 const hideCollaboratorDelay = 5000;
@@ -74,40 +75,41 @@ export function Collaborator({
   }
 
   return (
-    <div className={styles.collaborator} style={{ opacity: visible ? 1 : 0 }}>
-      {clientInfo.selectedID && (
-        <Rect
-          {...{
-            rep,
-            key: `selection-${clientInfo.selectedID}`,
-            id: clientInfo.selectedID,
-            highlight: true,
-            highlightColor: userInfo.color,
-          }}
-        />
-      )}
+    // <div className={styles.collaborator} style={{ opacity: visible ? 1 : 0 }}>
+    //   {clientInfo.selectedID && (
+    //     <Rect
+    //       {...{
+    //         rep,
+    //         key: `selection-${clientInfo.selectedID}`,
+    //         id: clientInfo.selectedID,
+    //         highlight: true,
+    //         highlightColor: userInfo.color,
+    //       }}
+    //     />
+    //   )}
+    //   <div
+    //     className={styles.cursor}
+    //     style={{
+    //       left: curPos.x,
+    //       top: curPos.y,
+    //       overflow: "auto",
+    //     }}
+    //   >
+    //     <div className={styles.pointer} style={{ color: userInfo.color }}>
+    //       ➤
+    //     </div>
+    //     <div
+    //       className={styles.userinfo}
+    //       style={{
+    //         backgroundColor: userInfo.color,
+    //         color: "white",
+    //       }}
+    //     >
+    //       {userInfo.avatar}&nbsp;{userInfo.name}
+    //     </div>
+    //   </div>
+    // </div>
+    <Marker position={{ lat: curPos.x, lng: curPos.y }} />
 
-      <div
-        className={styles.cursor}
-        style={{
-          left: curPos.x,
-          top: curPos.y,
-          overflow: "auto",
-        }}
-      >
-        <div className={styles.pointer} style={{ color: userInfo.color }}>
-          ➤
-        </div>
-        <div
-          className={styles.userinfo}
-          style={{
-            backgroundColor: userInfo.color,
-            color: "white",
-          }}
-        >
-          {userInfo.avatar}&nbsp;{userInfo.name}
-        </div>
-      </div>
-    </div>
   );
 }
