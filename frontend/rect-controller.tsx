@@ -1,9 +1,9 @@
-import { Rect } from "./rect";
-import { DraggableCore, DraggableEvent, DraggableData } from "react-draggable";
-import { useShapeByID } from "./subscriptions";
+import type { UndoManager } from "@rocicorp/undo";
+import { DraggableCore, DraggableData, DraggableEvent } from "react-draggable";
 import { Replicache } from "replicache";
 import { M } from "./mutators";
-import type { UndoManager } from "@rocicorp/undo";
+import { Rect } from "./rect";
+import { useShapeByID } from "./subscriptions";
 
 // TODO: In the future I imagine this becoming ShapeController and
 // there also be a Shape that wraps Rect and also knows how to draw Circle, etc.

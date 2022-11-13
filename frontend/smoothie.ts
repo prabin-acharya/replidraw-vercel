@@ -1,7 +1,8 @@
 import hermite from "cubic-hermite";
 import { useEffect, useState } from "react";
-import { Replicache, ReadTransaction } from "replicache";
+import { ReadTransaction, Replicache } from "replicache";
 import { getClientState } from "./client-state";
+import { getMarkerState } from "./marker";
 import { getShape } from "./shape";
 
 /**
@@ -30,6 +31,30 @@ export function useCursor(
   }
   const [x, y] = values;
   return { x, y };
+}
+
+export function useMarker(
+  rep: Replicache,
+  clientID: string
+): { lat: number; lng: number } | null {
+  const [values, setValues] = useState<Array<number> | null>(null);
+  const smoothie = Smoothie.get(
+    rep,
+    `Marker/${clientID}`,
+    async (tx: ReadTransaction) => {
+      const markerState = await getMarkerState(tx, clientID);
+      return {
+        animate: true,
+        values: [markerState.position.lat, markerState.position.lng],
+      };
+    }
+  );
+  useListener(smoothie, setValues, clientID);
+  if (!values) {
+    return null;
+  }
+  const [lat, lng] = values;
+  return { lat, lng };
 }
 
 /**

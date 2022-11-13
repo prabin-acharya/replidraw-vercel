@@ -1,14 +1,16 @@
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
-import type { UndoManager } from "@rocicorp/undo";
+import { GoogleMap, Marker, Polygon, useLoadScript } from "@react-google-maps/api";
+import { UndoManager } from "@rocicorp/undo";
+import { nanoid } from "nanoid";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Replicache } from "replicache";
 import { Collaborator } from "./collaborator";
+import { putMarker } from "./marker";
+import { MarkerController } from "./marker-controller";
 import { M } from "./mutators";
 import { useCursor } from "./smoothie";
 import {
-    useCollaboratorIDs
+    useCollaboratorIDs, useMarkerByID, useMarkerIDs, useSelectedMarkerID
 } from "./subscriptions";
-
 
 export function Map({
     rep,
@@ -30,9 +32,18 @@ export function Map({
     });
 
 
-    const onClick = (e: google.maps.MapMouseEvent) => {
+    const onClick = async (e: google.maps.MapMouseEvent) => {
         // avoid directly mutating state
         setClicks([...clicks, e.latLng!]);
+        console.log("clicks", clicks);
+        const a = JSON.stringify(e?.latLng?.toJSON(), null, 2)
+        const b: { lat: number, lng: number } = JSON.parse(a)
+        rep.mutate.createMarker({
+            id: nanoid(),
+            lat: b.lat,
+            lng: b.lng,
+            animate: true
+        })
     };
 
     const onIdle = (m: google.maps.Map) => {
@@ -61,6 +72,7 @@ export function Map({
                 x: pageX,
                 y: pageY - ref.current.offsetTop,
             });
+
         }
     };
 
@@ -71,6 +83,37 @@ export function Map({
         const b: { lat: number, lng: number } = JSON.parse(a)
         onMouseMove({ pageX: b.lat, pageY: b.lng })
     }
+
+
+    // 
+    //
+    //
+
+    const markerIds = useMarkerIDs(rep);
+    console.log("------++++", markerIds)
+
+
+    const selectedID = useSelectedMarkerID(rep);
+
+    const move = async (
+        dx: number = 0,
+        dy: number = 0,
+        animate: boolean = true
+    ) => {
+        await rep.mutate.moveShape({ id: selectedID, dx, dy, animate });
+    };
+
+
+    // 
+    //
+    // User editable shapes
+    let redCoords = [
+        { lat: 44.5, lng: -80.6 },
+        { lat: 44.01, lng: -79.08 },
+        { lat: 44.03, lng: -80 }
+    ];
+
+
 
 
     return (<>
@@ -106,8 +149,23 @@ export function Map({
 
                         {/* <Marker position={{ lat: 44, lng: -80 }} /> */}
                         {/* {clicks.map((latLng, i) => (
-                            <Marker key={i} position={latLng} />
+                            <Marker key={i} position={latLng}
+                                icon="https://maps.google.com/mapfiles/kml/pal2/icon7.png"
+                                draggable={true}
+                                onDragEnd={(e) => {
+                                    console.log(e?.latLng?.toJSON())
+                                }}
+                            />
                         ))} */}
+
+
+                        {/* 
+                        User editable shapes
+                        */}
+                        <Polygon path={redCoords} editable={true} />
+
+
+
                         {
                             // collaborators
                             // foreignObject seems super buggy in Safari, so instead we do the
@@ -123,6 +181,22 @@ export function Map({
                                 />
                             ))
                         }
+
+                        {
+                            // markers
+                            markerIds.map((id) => (
+                                <MarkerController
+                                    {...{
+                                        key: `marker-${id}`,
+                                        rep,
+                                        id,
+                                        undoManager,
+                                    }}
+                                />
+                            ))
+
+
+                        }
                     </GoogleMap>
 
                 </div>
@@ -132,4 +206,6 @@ export function Map({
     </>
     );
 }
+
+
 

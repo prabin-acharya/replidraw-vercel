@@ -1,17 +1,13 @@
 import {
-  initClientState,
-  setCursor,
-  overShape,
-  selectShape,
+  initClientState, overShape,
+  selectShape, setCursor
 } from "./client-state";
 import {
-  putShape,
-  deleteShape,
-  moveShape,
-  resizeShape,
-  rotateShape,
-  initShapes,
+  deleteShape, initShapes, moveShape, putShape, resizeShape,
+  rotateShape
 } from "./shape";
+
+import { deleteMarker, moveMarker, putMarker } from "./marker";
 
 export type M = typeof mutators;
 
@@ -26,4 +22,7 @@ export const mutators = {
   overShape,
   selectShape,
   initShapes,
+  createMarker: putMarker,
+  moveMarker,
+  deleteMarker,
 };

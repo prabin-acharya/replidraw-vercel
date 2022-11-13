@@ -1,9 +1,9 @@
-import { Rect } from "./rect";
-import { useShape } from "./smoothie";
-import { DraggableCore, DraggableEvent, DraggableData } from "react-draggable";
+import type { UndoManager } from "@rocicorp/undo";
+import { DraggableCore, DraggableData, DraggableEvent } from "react-draggable";
 import { Replicache } from "replicache";
 import { M } from "./mutators";
-import type { UndoManager } from "@rocicorp/undo";
+import { Rect } from "./rect";
+import { useShape } from "./smoothie";
 
 export function Selection({
   rep,
@@ -145,9 +145,8 @@ export function Selection({
             height={gripSize}
             style={{
               position: "absolute",
-              transform: `translate3d(${w - gripSize / 2 - 2}px, ${
-                h - gripSize / 2 - 2
-              }px, 0)`,
+              transform: `translate3d(${w - gripSize / 2 - 2}px, ${h - gripSize / 2 - 2
+                }px, 0)`,
               cursor: "grab",
               pointerEvents: "all",
             }}
@@ -171,9 +170,8 @@ export function Selection({
             height={gripSize}
             style={{
               position: "absolute",
-              transform: `translate3d(${w + gripSize * 1.5}px, ${
-                h / 2 - gripSize / 2
-              }px, 0)`,
+              transform: `translate3d(${w + gripSize * 1.5}px, ${h / 2 - gripSize / 2
+                }px, 0)`,
               cursor: "grab",
               pointerEvents: "all",
             }}

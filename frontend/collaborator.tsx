@@ -1,10 +1,8 @@
 import { Marker } from "@react-google-maps/api";
 import { useEffect, useState } from "react";
 import { Replicache } from "replicache";
-import CutomMarker from "./../assets/images/pointer.png";
 import styles from "./collaborator.module.css";
 import type { M } from "./mutators";
-import { Rect } from "./rect";
 import { useCursor } from "./smoothie";
 import { useClientInfo } from "./subscriptions";
 
@@ -45,11 +43,11 @@ export function Collaborator({
 
   if (curPos) {
     if (!lastPos) {
-      console.log(`Cursor ${clientID} - got initial position`, curPos);
+      // console.log(`Cursor ${clientID} - got initial position`, curPos);
       setLastPos({ pos: curPos, ts: Date.now() });
     } else {
       if (lastPos.pos.x != curPos.x || lastPos.pos.y != curPos.y) {
-        console.log(`Cursor ${clientID} - got change to`, curPos);
+        // console.log(`Cursor ${clientID} - got change to`, curPos);
         setLastPos({ pos: curPos, ts: Date.now() });
         setGotFirstChange(true);
       }
@@ -63,15 +61,15 @@ export function Collaborator({
 
   useEffect(() => {
     if (remaining > 0) {
-      console.log(`Cursor ${clientID} - setting timer for ${remaining}ms`);
+      // console.log(`Cursor ${clientID} - setting timer for ${remaining}ms`);
       const timerID = setTimeout(() => setPoke({}), remaining);
       return () => clearTimeout(timerID);
     }
   });
 
-  console.log(
-    `Cursor ${clientID} - elapsed ${elapsed}, remaining: ${remaining}, visible: ${visible}`
-  );
+  // console.log(
+  //   `Cursor ${clientID} - elapsed ${elapsed}, remaining: ${remaining}, visible: ${visible}`
+  // );
   if (!clientInfo || !curPos || !userInfo) {
     return null;
   }
