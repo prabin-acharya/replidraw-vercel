@@ -10,8 +10,6 @@ import { M, mutators } from "../../frontend/mutators";
 import { Nav } from "../../frontend/nav";
 import { randomShape } from "../../frontend/shape";
 
-
-
 export default function Home() {
   const [rep, setRep] = useState<Replicache<M> | null>(null);
   const [undoManager, setUndoManager] = useState<UndoManager | null>(null);
@@ -78,11 +76,6 @@ export default function Home() {
   if (!rep || !undoManager) {
     return null;
   }
-
-
-
-
-
 
   return (
     <>

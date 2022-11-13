@@ -48,14 +48,6 @@ export function Map({
     const ref = useRef<HTMLDivElement | null>(null);
 
 
-    // #########################
-    const [cursorLat, setCursorLat] = useState(44)
-    const [cursorLng, setCursorLng] = useState(-80)
-
-
-
-
-
     const onMouseMove = async ({
         pageX,
         pageY,
@@ -81,10 +73,6 @@ export function Map({
     }
 
 
-
-
-
-
     return (<>
         {!isLoaded ? <div>Loading...</div> :
             <>
@@ -108,11 +96,12 @@ export function Map({
                         center={{ lat: 44, lng: -80 }}
                         mapContainerStyle={{ height: "100vh", width: "100%", cursor: "pointer" }}
                         onClick={onClick}
-                    onMouseMove={(e) => onMouseMove2(e)}
+                        onMouseMove={(e) => onMouseMove2(e)}
                     // onIdle={onIdle}
                     >
 
-                        {/* <Marker position={{ lat: cursorLat, lng: cursorLng }} /> */}
+                        <Marker position={{ lat: 44, lng: -80 }}
+                        />
 
 
                         {/* <Marker position={{ lat: 44, lng: -80 }} /> */}

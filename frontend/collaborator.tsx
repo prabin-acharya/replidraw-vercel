@@ -1,11 +1,13 @@
 import { Marker } from "@react-google-maps/api";
 import { useEffect, useState } from "react";
 import { Replicache } from "replicache";
+import CutomMarker from "./../assets/images/pointer.png";
 import styles from "./collaborator.module.css";
 import type { M } from "./mutators";
 import { Rect } from "./rect";
 import { useCursor } from "./smoothie";
 import { useClientInfo } from "./subscriptions";
+
 
 const hideCollaboratorDelay = 5000;
 
@@ -109,7 +111,10 @@ export function Collaborator({
     //     </div>
     //   </div>
     // </div>
-    <Marker position={{ lat: curPos.x, lng: curPos.y }} />
+    <Marker position={{ lat: curPos.x, lng: curPos.y }}
+      icon="https://maps.google.com/mapfiles/kml/pal3/icon20.png"
+    
+    />
 
   );
 }
