@@ -7,7 +7,7 @@ import {
   rotateShape
 } from "./shape";
 
-import { deleteMarker, moveMarker, putMarker } from "./marker";
+import { deleteMarker, moveMarker, putMarker,setMarker } from "./marker";
 
 export type M = typeof mutators;
 
@@ -25,4 +25,5 @@ export const mutators = {
   createMarker: putMarker,
   moveMarker,
   deleteMarker,
+  setMarker
 };

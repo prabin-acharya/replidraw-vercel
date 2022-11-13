@@ -90,7 +90,6 @@ export function Map({
     //
 
     const markerIds = useMarkerIDs(rep);
-    console.log("------++++", markerIds)
 
 
     const selectedID = useSelectedMarkerID(rep);

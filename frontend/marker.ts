@@ -5,6 +5,8 @@ export const markerPrefix = `marker-`;
 
 
 export const markerKey = (id: string) => `${markerPrefix}${id}`;
+export type MarkerState = z.TypeOf<typeof markerStateSchema>;
+
 
 
 export const userInfoSchema = z.object({
@@ -49,6 +51,14 @@ export async function getMarkerState(
   };
 }
 
+export async function putMarkerState(
+  tx: WriteTransaction,
+  markerState: MarkerState
+): Promise<void> {
+  await tx.put(markerStateKey(markerState.id), markerState);
+}
+
+
 export const markerSchema = z.object({
   id: z.string(),
   // type: z.literal("rect"),
@@ -68,6 +78,7 @@ export async function getMarker(
   id: string
 ): Promise<Marker | undefined> {
   const val = await tx.get(markerKey(id));
+  console.log(id)
   if (val === undefined) {
     console.log(`Specified marker ${id} not found.`);
     return undefined;
@@ -92,19 +103,29 @@ export async function deleteMarker(
   await tx.del(markerKey(id));
 }
 
+export async function setMarker(
+  tx: WriteTransaction,
+  { id, lat, lng }: { id: string; lat: number; lng: number }
+): Promise<void> {
+  const clientState = await getMarkerState(tx, id);
+  clientState.position.lat = lat;
+  clientState.position.lng = lng;
+  await putMarkerState(tx, clientState);
+}
+
 export async function moveMarker(
   tx: WriteTransaction,
   {
     id,
-    dx,
-    dy,
+    lat,
+    lng,
     animate = true,
-  }: { id: string; dx: number; dy: number; animate?: boolean }
+  }: { id: string; lat: number; lng: number; animate?: boolean }
 ): Promise<void> {
   const marker = await getMarker(tx, id);
   if (marker) {
-    marker.lat += dx;
-    marker.lng += dy;
+    marker.lat = lat;
+    marker.lng  = lng;
     marker.animate = animate;
     await putMarker(tx, marker);
   }
