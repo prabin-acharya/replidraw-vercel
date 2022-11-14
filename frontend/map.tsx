@@ -1,4 +1,4 @@
-import { GoogleMap, Marker, Polygon, useLoadScript } from "@react-google-maps/api";
+import { GoogleMap, Marker, Polygon, Polyline, useLoadScript } from "@react-google-maps/api";
 import { UndoManager } from "@rocicorp/undo";
 import { nanoid } from "nanoid";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -7,10 +7,12 @@ import { Collaborator } from "./collaborator";
 import { putMarker } from "./marker";
 import { MarkerController } from "./marker-controller";
 import { M } from "./mutators";
+import { PolygonController } from "./polygon-controller";
 import { useCursor } from "./smoothie";
 import {
-    useCollaboratorIDs, useMarkerByID, useMarkerIDs, useSelectedMarkerID
+    useCollaboratorIDs, useMarkerByID, useMarkerIDs, usePolygonIDs, useSelectedMarkerID
 } from "./subscriptions";
+import { DrawingManager } from "@react-google-maps/api";
 
 export function Map({
     rep,
@@ -26,16 +28,17 @@ export function Map({
     const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
         lat: 44, lng: -80,
     });
+    const pathp = clicks.map((c) => ({ lat: c.lat(), lng: c.lng() }));
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+        libraries: ["drawing"],
     });
 
 
     const onClick = async (e: google.maps.MapMouseEvent) => {
         // avoid directly mutating state
         setClicks([...clicks, e.latLng!]);
-        console.log("clicks", clicks);
         const a = JSON.stringify(e?.latLng?.toJSON(), null, 2)
         const b: { lat: number, lng: number } = JSON.parse(a)
         rep.mutate.createMarker({
@@ -92,15 +95,15 @@ export function Map({
     const markerIds = useMarkerIDs(rep);
 
 
-    const selectedID = useSelectedMarkerID(rep);
+    // const selectedID = useSelectedMarkerID(rep);
 
-    const move = async (
-        dx: number = 0,
-        dy: number = 0,
-        animate: boolean = true
-    ) => {
-        await rep.mutate.moveShape({ id: selectedID, dx, dy, animate });
-    };
+    // const move = async (
+    //     dx: number = 0,
+    //     dy: number = 0,
+    //     animate: boolean = true
+    // ) => {
+    //     await rep.mutate.moveShape({ id: selectedID, dx, dy, animate });
+    // };
 
 
     // 
@@ -112,6 +115,27 @@ export function Map({
         { lat: 44.03, lng: -80 }
     ];
 
+
+    // 
+    //
+    // collaborative polygons
+    const polygonIds = usePolygonIDs(rep)
+
+
+    const onLoad = (drawingManager:any) => {
+        console.log(drawingManager)
+    }
+
+    const onPolygonComplete = (polygon: any) => {
+        const a = JSON.stringify(polygon.getPath().getArray(), null, 2)
+        console.log(a,"****************")
+    }
+
+    const onMarkerComplete = (marker: any) => {
+        const a = JSON.stringify(marker.getPosition().toJSON(), null, 2)
+        console.log(a, "****************")
+    }
+    
 
 
 
@@ -141,9 +165,37 @@ export function Map({
                         onMouseMove={(e) => onMouseMove2(e)}
                     // onIdle={onIdle}
                     >
-
-                        <Marker position={{ lat: 44, lng: -80 }}
+                        <DrawingManager 
+                            drawingMode={google.maps.drawing?.OverlayType?.MARKER}
+                            options={{
+                                drawingControl: true,
+                                drawingControlOptions: {
+                                    position: google.maps?.ControlPosition?.TOP_CENTER,
+                                    drawingModes: [
+                                        google.maps.drawing?.OverlayType?.MARKER,
+                                        google.maps.drawing?.OverlayType?.CIRCLE,
+                                        google.maps.drawing?.OverlayType?.POLYGON,
+                                        google.maps.drawing?.OverlayType?.POLYLINE,
+                                        google.maps.drawing?.OverlayType?.RECTANGLE,
+                                    ],
+                                },
+                                markerOptions: {
+                                    icon: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+                                },
+                                circleOptions: {
+                                    fillColor: "#ffff00",
+                                    fillOpacity: 1,
+                                    strokeWeight: 5,
+                                    clickable: false,
+                                    editable: true,
+                                    zIndex: 1,
+                                },
+                            }}  
+                            onPolygonComplete={onPolygonComplete}
+                            onMarkerComplete={onMarkerComplete}
                         />
+
+                        {/* <Marker position={{ lat: 44, lng: -80 }}  /> */}
 
 
                         {/* <Marker position={{ lat: 44, lng: -80 }} /> */}
@@ -152,16 +204,19 @@ export function Map({
                                 icon="https://maps.google.com/mapfiles/kml/pal2/icon7.png"
                                 draggable={true}
                                 onDragEnd={(e) => {
-                                    console.log(e?.latLng?.toJSON())
+                                    console.log(e?.AIzaSyCOQ6uZiRDIf0aB10Y2u9KKUGQ5IHrVlKAlatLng?.toJSON())
                                 }}
                             />
                         ))} */}
 
 
+
+                        {/* <Polyline path={pathp} /> */}
+
                         {/* 
                         User editable shapes
                         */}
-                        <Polygon path={redCoords} editable={true} />
+                        {/* <Polygon path={redCoords} editable={true} /> */}
 
 
 

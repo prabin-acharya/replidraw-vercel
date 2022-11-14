@@ -2,6 +2,8 @@ import { Replicache } from "replicache";
 import { useSubscribe } from "replicache-react";
 import { clientStatePrefix, getClientState } from "./client-state";
 import { getMarker, markerPrefix } from "./marker";
+import { getPolygon, polygonPrefix } from "./polygon";
+
 import { mutators } from "./mutators";
 import { getShape, shapePrefix } from "./shape";
 
@@ -27,6 +29,17 @@ export function useMarkerIDs(rep: Replicache<typeof mutators>) {
   );
 }
 
+export function usePolygonIDs(rep: Replicache<typeof mutators>) {
+  return useSubscribe(
+    rep,
+    async (tx) => {
+      const polygons = await tx.scan({ prefix: polygonPrefix }).keys().toArray();
+      return polygons.map((k) => k.split("-", 2)[1]);
+    },
+    []
+  );
+}
+
 
 export function useShapeByID(rep: Replicache<typeof mutators>, id: string) {
   return useSubscribe(
@@ -43,6 +56,16 @@ export function useMarkerByID(rep: Replicache<typeof mutators>, id: string) {
     rep,
     async (tx) => {
       return (await getMarker(tx, id)) ?? null;
+    },
+    null
+  );
+}
+
+export function usePolygonByID(rep: Replicache<typeof mutators>, id: string) {
+  return useSubscribe(
+    rep,
+    async (tx) => {
+      return (await getPolygon(tx, id)) ?? null;
     },
     null
   );

@@ -39,9 +39,6 @@ export function MarkerController({
             position={{ lat: marker.lat, lng:marker.lng }}
             icon="https://maps.google.com/mapfiles/kml/pal2/icon7.png"
             draggable={true}
-            onDragEnd={(e) => {
-                console.log(e?.latLng?.toJSON())
-            }}
             onDrag={(e) =>onDrag(e)}
         />
     )
